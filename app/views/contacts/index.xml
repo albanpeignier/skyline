@@ -1,7 +1,7 @@
 <ThomsonPhoneBook>
   <% @contacts.each do |contact| %>
   <DirectoryEntry>
-    <Name><%= contact.name %></Name>
+    <Name><%=  contact.filtered_display_name.to_iso %></Name>
     <Telephone><%= contact.number %></Telephone>
   </DirectoryEntry>
   <% end %>

@@ -16,4 +16,16 @@ describe Contact do
     Contact.new(:number => "1 2.3").number.should == "123"
   end
 
+  describe "filtered display name" do
+
+    it "should remove multiple space characters" do
+      Contact.new(:name => "Tom  Jerry").filtered_display_name.should == "Tom Jerry"
+    end
+
+    it "should remove &" do
+      Contact.new(:name => "Tom&Jerry").filtered_display_name.should == "Tom Jerry"
+    end
+    
+  end
+
 end
