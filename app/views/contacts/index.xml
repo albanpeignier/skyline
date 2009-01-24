@@ -1,0 +1,9 @@
+<ThomsonPhoneBook>
+  <% @contacts.each do |contact| %>
+  <DirectoryEntry>
+    <Name><%= contact.name %></Name>
+    <Telephone><%= contact.number %></Telephone>
+  </DirectoryEntry>
+  <% end %>
+<ThomsonPhoneBook>
+
