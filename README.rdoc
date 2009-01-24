@@ -1,0 +1,14 @@
+= Skyline
+
+== Apache proxy
+
+Some of devices don't support another port than 80 in their http request.
+To test, a small proxy in Apache2 is required :
+
+  RewriteRule     /(contacts.*) http://localhost:3000/$1 [P]
+  ProxyRequests Off
+
+  <Proxy http://localhost:3000/*>
+    Order deny,allow
+    Allow from all
+  </Proxy>
