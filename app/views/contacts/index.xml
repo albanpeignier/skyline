@@ -5,5 +5,5 @@
     <Telephone><%= contact.number %></Telephone>
   </DirectoryEntry>
   <% end %>
-<ThomsonPhoneBook>
+</ThomsonPhoneBook>
 
