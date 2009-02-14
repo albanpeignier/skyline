@@ -1,6 +1,18 @@
 desc "Install required dependencies (Rails, Gems ...)"
-task :setup => [ 'rails:install', 'gems:install_with_sudo']
-  
+task :setup => 'rails:install' do
+  new_rake 'gems:install_with_sudo'
+
+  # run other tasks in a new rake
+  pending_tasks = Rake.application.top_level_tasks - %w(setup)
+  unless pending_tasks.empty?
+    exit new_rake pending_tasks
+  end
+end
+
+def new_rake(*tasks)
+  sh "rake #{tasks.join(' ')}"
+end
+
 namespace :gems do
 
   task :use_sudo do
@@ -17,28 +29,44 @@ end
 namespace :rails do
 
   task :install do
-    if version = gem_version
-      gem_install_if_needed 'rails', version
-    else
-      gem_install_if_needed 'rails'
-    end
+    RailsSetup.execute
   end
 
-  def gem_installed?(name, version = nil)
+end
+
+require 'rubygems'
+module RailsSetup
+
+  def self.pending?
+    required? and
+      not (Rake.application.top_level_tasks & %w{setup rails:install}).empty?
+  end
+
+  def self.required?
+    not gem_installed? name, gem_version
+  end
+
+  def self.execute
+    gem_install_if_needed 'rails', gem_version      
+  end
+
+  private
+
+  def self.gem_installed?(name, version = nil)
     not Gem.source_index.find_name(name, version).empty?
   end
 
-  def gem_install_if_needed(name, version = nil)
+  def self.gem_install_if_needed(name, version = nil)
     return if gem_installed? name, version
 
-    cmd = %w(install) << name
-    cmd << "--version" << %("#{version.to_s}") if version
-    sh "sudo ${cmd}"
+    cmd = "gem install #{name}"
+    cmd << " --version #{version}" if version
+    sh "sudo #{cmd}"
   end
 
   # related boot.rb code can't be used :(
 
-  def gem_version
+  def self.gem_version
     if defined? RAILS_GEM_VERSION
       RAILS_GEM_VERSION
     elsif ENV.include?('RAILS_GEM_VERSION')
@@ -48,12 +76,13 @@ namespace :rails do
     end
   end
 
-  def parse_gem_version(text)
+  def self.parse_gem_version(text)
     $1 if text =~ /^[^#]*RAILS_GEM_VERSION\s*=\s*["']([!~<>=]*\s*[\d.]+)["']/
   end
   
-  def read_environment_rb
-    File.read("#{RAILS_ROOT}/config/environment.rb")
+  def self.read_environment_rb
+    File.read("#{File.dirname(__FILE__)}/../../config/environment.rb")
   end
 
 end
+
