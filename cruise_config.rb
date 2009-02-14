@@ -9,7 +9,7 @@ Project.configure do |project|
   project.email_notifier.from = 'root@tryphon.org'
 
   # Build the project by invoking rake task 'custom'
-  project.rake_task = 'spec'
+  project.rake_task = 'cruise'
 
   # Build the project by invoking shell script "build_my_app.sh". Keep in mind that when the script is invoked,
   # current working directory is <em>[cruise&nbsp;data]</em>/projects/your_project/work, so if you do not keep build_my_app.sh
