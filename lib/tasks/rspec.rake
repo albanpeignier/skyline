@@ -143,8 +143,9 @@ begin
     end
   end
 rescue MissingSourceFile
+  # Disabled because it breaks rake gems:install:
   # if rspec-rails is a configured gem, this will output helpful material and exit ...
-  require File.expand_path(File.dirname(__FILE__) + "/../../config/environment")
+  #require File.expand_path(File.dirname(__FILE__) + "/../../config/environment")
 
   # ... otherwise, do this:
   raise <<-MSG
