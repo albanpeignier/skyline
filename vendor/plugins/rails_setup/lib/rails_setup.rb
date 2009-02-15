@@ -16,7 +16,7 @@ module RailsSetup
 
   def self.depends_on_rails_install?(task_name)
     return true if task_name == 'rails:install'
-    Rake::Task[task_name].prerequisites.any? { |p| dependent_on_rails_install? p }
+    Rake::Task[task_name].prerequisites.any? { |p| depends_on_rails_install? p }
   rescue
     false
   end
